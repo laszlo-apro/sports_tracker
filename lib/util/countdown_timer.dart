@@ -7,15 +7,18 @@ class CountdownTimer {
   static const _oneSecond = Duration(seconds: 1);
 
   int _secondsLeft = 0;
+  late void Function(int secondsLeft) _tickCallback;
   late void Function() _doneCallback;
   late AudioPlayer _audioPlayer;
   late Timer _timer;
 
   void init({
     required int seconds,
+    required void Function(int secondsLeft) tickCallback,
     required void Function() doneCallback,
   }) {
     _secondsLeft = seconds;
+    _tickCallback = tickCallback;
     _doneCallback = doneCallback;
     _audioPlayer = AudioPlayer();
   }
@@ -25,12 +28,13 @@ class CountdownTimer {
     _audioPlayer.dispose();
   }
 
-  Future<void> start() async {
+  Future<void> startDelayed() async {
     await Future.delayed(const Duration(seconds: 3));
 
     _timer = Timer.periodic(
       _oneSecond,
       (timer) async {
+        _tickCallback(_secondsLeft);
         if (_secondsLeft == 0) {
           _timer.cancel();
           _doneCallback();

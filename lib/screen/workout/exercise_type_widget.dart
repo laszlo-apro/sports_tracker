@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sports_tracker/data/exercise_type.dart';
+import 'package:sports_tracker/screen/workout/countdown/countdown_bottom_sheet.dart';
 import 'package:sports_tracker/screen/workout/modifier_button_widget.dart';
-import 'package:sports_tracker/util/countdown_timer.dart';
 import 'package:sports_tracker/util/shared_pref_helpers.dart';
 
 class ExerciseTypeWidget extends StatefulWidget {
@@ -61,8 +61,10 @@ class _ExerciseTypeWidgetState extends State<ExerciseTypeWidget> {
     final counted = widget.exerciseType.type == 'counted';
     final measured = widget.exerciseType.type == 'measured';
 
-    final titleText = '${widget.exerciseType.name}${counted ? '\n/ $_weight kg' : ''}';
-    final subtitleText = '${counted ? '$_numSeries x ' : ''}$_numReps ${widget.exerciseType.unit}';
+    final titleText =
+        '${widget.exerciseType.name}${counted ? '\n/ $_weight kg' : ''}';
+    final subtitleText =
+        '${counted ? '$_numSeries x ' : ''}$_numReps ${widget.exerciseType.unit}';
 
     return Dismissible(
       key: Key(widget.exerciseType.id),
@@ -181,23 +183,23 @@ class _ExerciseTypeWidgetState extends State<ExerciseTypeWidget> {
     int? numReps,
   }) {
     if (timed) {
-      _startCountdownTimer(exerciseId: exerciseId!, seconds: numReps!);
+      _showCountdownBottomSheet(exerciseId: exerciseId!, seconds: numReps!);
     } else if (counted) {
       _showConfirmationDialog();
     }
   }
 
-  void _startCountdownTimer({required String exerciseId, required int seconds}) {
-    final timer = CountdownTimer();
-    timer.init(
-      seconds: seconds,
-      doneCallback: () async {
-        await writeNumReps(exerciseId: exerciseId, numReps: seconds);
-        await Future.delayed(const Duration(seconds: 3));
-        timer.dispose();
-      },
+  void _showCountdownBottomSheet({
+    required String exerciseId,
+    required int seconds,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => CountdownBottomSheet(
+        exerciseId: exerciseId,
+        seconds: seconds,
+      ),
     );
-    timer.start();
   }
 
   void _showConfirmationDialog() {

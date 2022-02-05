@@ -53,14 +53,17 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   void _init() {
     Wakelock.enable();
 
-    _workoutTypeRef = FirebaseDatabase.instance.ref('workout_types/${widget.workoutId}');
+    _workoutTypeRef =
+        FirebaseDatabase.instance.ref('workout_types/${widget.workoutId}');
 
     _exerciseTypesRef = FirebaseDatabase.instance.ref('exercise_types');
     _exerciseTypesSubscription = _exerciseTypesRef.onValue.listen((event) {
       setState(() {
         _exerciseTypes.clear();
-        for (final entry in (event.snapshot.value as Map<Object?, Object?>).entries) {
-          final map = (entry.value as Map<Object?, Object?>)..['id'] = entry.key;
+        for (final entry
+            in (event.snapshot.value as Map<Object?, Object?>).entries) {
+          final map = (entry.value as Map<Object?, Object?>)
+            ..['id'] = entry.key;
           _exerciseTypes.add(ExerciseType.fromMap(map));
         }
       });
@@ -75,7 +78,9 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final exerciseTypeWidgets = _exerciseTypes.isEmpty ? [] : _exerciseIds.map(_buildExerciseTypeWidget).toList();
+    final exerciseTypeWidgets = _exerciseTypes.isEmpty
+        ? []
+        : _exerciseIds.map(_buildExerciseTypeWidget).toList();
 
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColorLight,
@@ -94,14 +99,16 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       DropdownButton(
-                        items: _filterAndSortExerciseTypes().map((exerciseType) {
+                        items:
+                            _filterAndSortExerciseTypes().map((exerciseType) {
                           return DropdownMenuItem(
                             value: exerciseType.id,
                             child: Text(exerciseType.name),
                           );
                         }).toList(),
                         value: _selectedExerciseTypeId,
-                        onChanged: (value) => setState(() => _selectedExerciseTypeId = value.toString()),
+                        onChanged: (value) => setState(
+                            () => _selectedExerciseTypeId = value.toString()),
                       ),
                       TextButton(
                         onPressed: _addExercise,
@@ -131,15 +138,18 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     return ExerciseTypeWidget(
       key: Key(exerciseId),
       exerciseType: exerciseType,
-      weightChangedCallback: ({required double newWeight}) => _changeExerciseWeight(
+      weightChangedCallback: ({required double newWeight}) =>
+          _changeExerciseWeight(
         exerciseId: exerciseId,
         newWeight: newWeight,
       ),
-      numSeriesChangedCallback: ({required int newNumSeries}) => _changeExerciseNumSeries(
+      numSeriesChangedCallback: ({required int newNumSeries}) =>
+          _changeExerciseNumSeries(
         exerciseId: exerciseId,
         newNumSeries: newNumSeries,
       ),
-      numRepsChangedCallback: ({required int newNumReps}) => _changeExerciseNumReps(
+      numRepsChangedCallback: ({required int newNumReps}) =>
+          _changeExerciseNumReps(
         exerciseId: exerciseId,
         newNumReps: newNumReps,
       ),
@@ -149,7 +159,9 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   }
 
   List<ExerciseType> _filterAndSortExerciseTypes() {
-    return _exerciseTypes.where((exerciseType) => !_exerciseIds.contains(exerciseType.id)).toList()
+    return _exerciseTypes
+        .where((exerciseType) => !_exerciseIds.contains(exerciseType.id))
+        .toList()
       ..sort((a, b) => a.name.compareTo(b.name));
   }
 
@@ -163,7 +175,8 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
       ]
     });
 
-    _exerciseByIdMap[_selectedExerciseTypeId!] = Exercise(typeId: _selectedExerciseTypeId!);
+    _exerciseByIdMap[_selectedExerciseTypeId!] =
+        Exercise(typeId: _selectedExerciseTypeId!);
 
     setState(() {
       _exerciseIds.add(_selectedExerciseTypeId!);
@@ -181,16 +194,22 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     setState(() => _exerciseIds.remove(exerciseId));
   }
 
-  void _changeExerciseWeight({required String exerciseId, required double newWeight}) {
-    _exerciseByIdMap[exerciseId] = _exerciseByIdMap[exerciseId]!.copyWith(weight: newWeight);
+  void _changeExerciseWeight(
+      {required String exerciseId, required double newWeight}) {
+    _exerciseByIdMap[exerciseId] =
+        _exerciseByIdMap[exerciseId]!.copyWith(weight: newWeight);
   }
 
-  void _changeExerciseNumSeries({required String exerciseId, required int newNumSeries}) {
-    _exerciseByIdMap[exerciseId] = _exerciseByIdMap[exerciseId]!.copyWith(numSeries: newNumSeries);
+  void _changeExerciseNumSeries(
+      {required String exerciseId, required int newNumSeries}) {
+    _exerciseByIdMap[exerciseId] =
+        _exerciseByIdMap[exerciseId]!.copyWith(numSeries: newNumSeries);
   }
 
-  void _changeExerciseNumReps({required String exerciseId, required int newNumReps}) {
-    _exerciseByIdMap[exerciseId] = _exerciseByIdMap[exerciseId]!.copyWith(numReps: newNumReps);
+  void _changeExerciseNumReps(
+      {required String exerciseId, required int newNumReps}) {
+    _exerciseByIdMap[exerciseId] =
+        _exerciseByIdMap[exerciseId]!.copyWith(numReps: newNumReps);
   }
 
   void _finishExercise({required String exerciseId}) {
@@ -200,12 +219,15 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
   Future<void> _logActivity() async {
     for (final exercise in _exerciseByIdMap.values) {
       if (exercise.weight != null) {
-        await writeWeight(exerciseId: exercise.typeId, weight: exercise.weight!);
+        await writeWeight(
+            exerciseId: exercise.typeId, weight: exercise.weight!);
       }
       if (exercise.numSeries != null) {
-        await writeNumSeries(exerciseId: exercise.typeId, numSeries: exercise.numSeries!);
+        await writeNumSeries(
+            exerciseId: exercise.typeId, numSeries: exercise.numSeries!);
       }
-      await writeNumReps(exerciseId: exercise.typeId, numReps: exercise.numReps);
+      await writeNumReps(
+          exerciseId: exercise.typeId, numReps: exercise.numReps);
     }
 
     final workout = Workout(
@@ -218,5 +240,13 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
         .ref('workouts')
         .child(workout.dateTime.millisecondsSinceEpoch.toString())
         .set(workout.toMap());
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Activity successfully logged.'),
+      ),
+    );
+
+    Navigator.of(context).pop();
   }
 }
