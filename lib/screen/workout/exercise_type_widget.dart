@@ -64,7 +64,7 @@ class _ExerciseTypeWidgetState extends State<ExerciseTypeWidget> {
     final titleText =
         '${widget.exerciseType.name}${counted ? '\n/ $_weight kg' : ''}';
     final subtitleText =
-        '${counted ? '$_numSeries x ' : ''}$_numReps ${widget.exerciseType.unit}';
+        '${timed || counted ? '$_numSeries x ' : ''}$_numReps ${widget.exerciseType.unit}';
 
     return Dismissible(
       key: Key(widget.exerciseType.id),
@@ -111,18 +111,18 @@ class _ExerciseTypeWidgetState extends State<ExerciseTypeWidget> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (counted)
+                  if (timed || counted)
                     ModifierButtonWidget(
                       callback: () => _addNumSeries(-1),
                       label: '-',
                     ),
-                  if (counted) const SizedBox(width: 8.0),
-                  if (counted)
+                  if (timed || counted) const SizedBox(width: 8.0),
+                  if (timed || counted)
                     ModifierButtonWidget(
                       callback: () => _addNumSeries(1),
                       label: '+',
                     ),
-                  if (counted) const SizedBox(width: 24.0),
+                  if (timed || counted) const SizedBox(width: 24.0),
                   ModifierButtonWidget(
                     callback: () => _addNumReps(-1),
                     label: '-',
