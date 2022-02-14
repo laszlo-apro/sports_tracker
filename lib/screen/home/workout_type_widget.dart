@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sports_tracker/data/workout_type.dart';
 import 'package:sports_tracker/screen/workout/workout_screen.dart';
+import 'package:sports_tracker/util/constants.dart';
 
 class WorkoutTypeWidget extends StatelessWidget {
   const WorkoutTypeWidget({
@@ -32,6 +33,10 @@ class WorkoutTypeWidget extends StatelessWidget {
           ),
         )),
         child: ListTile(
+          leading: Icon(
+            iconByWorkoutTypeId[workoutType.id],
+            color: colorByWorkoutTypeId[workoutType.id],
+          ),
           title: Text(workoutType.name),
         ),
       ),

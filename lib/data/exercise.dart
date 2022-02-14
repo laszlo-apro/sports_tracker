@@ -7,12 +7,12 @@ class Exercise {
   });
 
   final String typeId;
-  final double? weight;
+  final num? weight;
   final int? numSeries;
   final int numReps;
 
   Exercise copyWith({
-    double? weight,
+    num? weight,
     int? numSeries,
     int? numReps,
   }) {
@@ -24,9 +24,18 @@ class Exercise {
     );
   }
 
+  static Exercise fromMap(Map<Object?, Object?> map) {
+    return Exercise(
+      typeId: map['id'] as String,
+      weight: map['weight'] as num?,
+      numSeries: map['numSeries'] as int?,
+      numReps: map['numReps'] as int,
+    );
+  }
+
   Map<String, dynamic> toMap() => {
-        'weight': weight,
-        'numSeries': numSeries,
+        'weight': weight == 0.0 ? null : weight,
+        'numSeries': numSeries == 0 ? null : numSeries,
         'numReps': numReps,
       };
 

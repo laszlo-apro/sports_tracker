@@ -220,7 +220,7 @@ class _WorkoutScreenState extends State<WorkoutScreen> {
     for (final exercise in _exerciseByIdMap.values) {
       if (exercise.weight != null) {
         await writeWeight(
-            exerciseId: exercise.typeId, weight: exercise.weight!);
+            exerciseId: exercise.typeId, weight: exercise.weight!.toDouble());
       }
       if (exercise.numSeries != null) {
         await writeNumSeries(

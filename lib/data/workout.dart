@@ -11,9 +11,24 @@ class Workout {
   final DateTime dateTime;
   final List<Exercise> exercises;
 
+  static Workout fromMap(Map<Object?, Object?> map) {
+    return Workout(
+      typeId: map['workout_type_id'] as String,
+      dateTime: DateTime.fromMillisecondsSinceEpoch(
+        int.parse(map['id'] as String),
+      ),
+      exercises: (map['exercises'] as Map<Object?, Object?>).entries.map((e) {
+        final map = (e.value as Map<Object?, Object?>)..['id'] = e.key;
+        return Exercise.fromMap(map);
+      }).toList(),
+    );
+  }
+
   Map<String, dynamic> toMap() => {
         'workout_type_id': typeId,
-        'exercises': {for (final exercise in exercises) exercise.typeId: exercise.toMap()},
+        'exercises': {
+          for (final exercise in exercises) exercise.typeId: exercise.toMap()
+        },
       };
 
   @override
